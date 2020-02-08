@@ -39,3 +39,24 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+
+select 
+tbl0.c1,
+c2,
+t0.valor
+from 
+tbl0
+inner join(
+select 
+c1,
+clave,
+valor
+ FROM tbl1
+LATERAL VIEW
+explode(c4) tbl1 as clave, valor
+)t0 on t0.clave = tbl0.c2 and t0.c1 = tbl0.c1 
+;
+
+!hadoop fs -copyToLocal /tmp/output output;

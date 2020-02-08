@@ -18,6 +18,7 @@
 -- Escriba el resultado a la carpeta `output` del directorio actual.
 -- 
 fs -rm -f -r output;
+
 --
 u = LOAD 'data.csv' USING PigStorage(',') 
     AS (id:int, 
@@ -30,3 +31,9 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+
+v = FOREACH u GENERATE $3,ToDate($3,'yyyy-MM-dd');
+w = FOREACH v GENERATE ToString($1,'yyyy'),ToString($1,'yy');
+
+STORE w INTO 'output' USING PigStorage(',');
+fs -copyToLocal output output

@@ -40,4 +40,22 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+COLLECTION ITEMS TERMINATED BY ':'
+
+select
+collect_set(may)
+from(
+select
+c1,
+upper(c0)may
+from tbl0
+lateral view 
+explode(c5)tbl0 as c0
+)t0
+group by c1
+;
+
+!hadoop fs -copyToLocal /tmp/output output;
 

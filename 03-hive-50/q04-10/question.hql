@@ -38,5 +38,20 @@ LINES TERMINATED BY '\n';
 LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
---
 
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+
+    SELECT DISTINCT
+    tc5
+    FROM (
+        SELECT
+        tc5
+        FROM
+            tbl0
+        LATERAL VIEW
+            explode(c5) tbl0 AS tc5
+    ) t0
+;
+
+!hadoop fs -copyToLocal /tmp/output output;

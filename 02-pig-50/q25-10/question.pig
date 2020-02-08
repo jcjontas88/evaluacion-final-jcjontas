@@ -15,6 +15,7 @@
 -- Escriba el resultado a la carpeta `output` del directorio actual.
 -- 
 fs -rm -f -r output;
+
 -- 
 u = LOAD 'data.csv' USING PigStorage(',') 
     AS (id:int, 
@@ -26,3 +27,10 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+
+v = FOREACH u GENERATE INDEXOF($1, 'a', 1);
+
+STORE v INTO 'output';
+
+fs -copyToLocal output output

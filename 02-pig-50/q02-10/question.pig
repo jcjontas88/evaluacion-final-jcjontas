@@ -10,3 +10,14 @@ fs -rm -f -r output;
 -- 
 
 
+file = LOAD 'data.tsv' 
+       AS (f1: CHARARRAY, 
+           f2: CHARARRAY, 
+           f3: INT);
+           
+ordered = ORDER file BY f1, f3;
+STORE ordered INTO 'output';
+
+fs -copyToLocal output output
+
+

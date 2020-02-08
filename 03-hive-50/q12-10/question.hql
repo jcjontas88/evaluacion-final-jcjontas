@@ -26,5 +26,26 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 
+select
+c0,
+key as clave,
+count(t2.key)
 
+from(
+select
+c3,
+c0
+from t0
+lateral view 
+explode(c2)t0 as c0
+)t1
+lateral view
+explode(c3)t2
+group by c0,t2.key
+order by c0,t2.key asc
+;
+
+!hadoop fs -copyToLocal /tmp/output output;
